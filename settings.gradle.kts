@@ -19,13 +19,10 @@ dependencyResolutionManagement {
   repositories {
     google()
     mavenCentral()
+    maven { url = uri("https://jitpack.io") }
   }
 }
 
 rootProject.name = "TTML Studio"
 
 include(":app")
-// ⭐ مستودعات ArchiveTune الفرعية
-includeBuild("core")
-includeBuild("moriextractor")
-includeBuild("morideobfuscator")

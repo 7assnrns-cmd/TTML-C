@@ -93,7 +93,8 @@ fun LibraryScreen(
     onPickFromDevice: () -> Unit,
     onImportDirectLink: (url: String, title: String, artist: String) -> Unit,
     onCreateManualProject: (String, String, String) -> Unit,
-    onDeleteProject: (String) -> Unit
+    onDeleteProject: (String) -> Unit,
+    onRecordVoiceTranscribe: () -> Unit
 ) {
     var searchQuery by remember { mutableStateOf("") }
     var filterCompletedOnly by remember { mutableStateOf(false) }
@@ -328,14 +329,15 @@ fun LibraryScreen(
         }
     }
 
-    // 4-Option Modal Bottom Sheet
+    // 5-Option Modal Bottom Sheet
     if (showAddSheet) {
         AddSongBottomSheet(
             onDismiss = { showAddSheet = false },
             onPickFromDevice = onPickFromDevice,
             onImportFromYtMusic = onNavigateToYtMusic,
             onImportFromLink = { showLinkDialog = true },
-            onCreateManual = { showManualDialog = true }
+            onCreateManual = { showManualDialog = true },
+            onRecordVoiceTranscribe = onRecordVoiceTranscribe
         )
     }
 

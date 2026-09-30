@@ -53,7 +53,8 @@ fun AddSongBottomSheet(
     onPickFromDevice: () -> Unit,
     onImportFromYtMusic: () -> Unit,
     onImportFromLink: () -> Unit,
-    onCreateManual: () -> Unit
+    onCreateManual: () -> Unit,
+    onRecordVoiceTranscribe: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
@@ -127,6 +128,19 @@ fun AddSongBottomSheet(
                 onClick = {
                     onDismiss()
                     onCreateManual()
+                }
+            )
+
+            // Option 5: Voice Recording & Gemini Transcription
+            AddOptionRow(
+                icon = androidx.compose.material.icons.filled.Mic,
+                iconTint = AppleMusicPurple,
+                title = "تسجيل صوتي + تفريغ بالذكاء الاصطناعي (Gemini AI Transcribe)",
+                subtitle = "Record audio with mic & transcribe into lyrics automatically",
+                testTag = "btn_sheet_record_transcribe",
+                onClick = {
+                    onDismiss()
+                    onRecordVoiceTranscribe()
                 }
             )
         }

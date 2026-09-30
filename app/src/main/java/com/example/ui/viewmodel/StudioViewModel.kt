@@ -552,6 +552,34 @@ class StudioViewModel(application: Application) : AndroidViewModel(application) 
         return stream
     }
 
+    fun transcribeAudioRecord(audioFile: java.io.File, title: String = "Voice Recording") {
+        viewModelScope.launch {
+            _isSearching.value = true
+            val transcription = com.example.data.remote.GeminiAudioTranscriber.transcribeAudioFile(audioFile)
+            _isSearching.value = false
+
+            val parsed = AutoParser.parse(transcription, title)
+            val project = LyricsProject(
+                title = title,
+                artist = "AI Voice Transcribed",
+                audioUri = audioFile.absolutePath,
+                durationMs = parsed.durationMs.coerceAtLeast(30000L),
+                lines = parsed.lines
+            )
+
+            val peaks = com.example.player.WaveformExtractor.extractFromStream(
+                streamUrl = audioFile.absolutePath,
+                seed = audioFile.name,
+                sampleCount = 360
+            )
+            _waveformPeaks.value = peaks
+            audioManager.loadAudio(audioFile.absolutePath, project.durationMs)
+
+            _currentProject.value = project
+            repository.insertProject(project)
+        }
+    }
+
     fun importFromDeviceAudio(context: Context, uri: Uri) {
         viewModelScope.launch {
             val metadata = AudioMetadataExtractor.extractAndCopy(context, uri)

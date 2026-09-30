@@ -90,6 +90,23 @@ fun StudioApp(viewModel: StudioViewModel) {
         }
     }
 
+    var isRecordingAudio by remember { mutableStateOf(false) }
+    var audioRecorder by remember { mutableStateOf<com.example.usecase.AudioRecorder?>(null) }
+
+    val recordPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            val recorder = com.example.usecase.AudioRecorder(context)
+            audioRecorder = recorder
+            val file = recorder.startRecording()
+            isRecordingAudio = true
+            Toast.makeText(context, "🎤 Recording audio... Speak or sing into mic!", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(context, "Microphone permission required for audio transcription", Toast.LENGTH_LONG).show()
+        }
+    }
+
     // SAF Audio File Picker (MP3, M4A, WAV, FLAC)
     val pickAudioLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument()
@@ -156,8 +173,49 @@ fun StudioApp(viewModel: StudioViewModel) {
                         },
                         onDeleteProject = { id ->
                             viewModel.deleteProject(id)
+                        },
+                        onRecordVoiceTranscribe = {
+                            recordPermissionLauncher.launch(android.Manifest.permission.RECORD_AUDIO)
                         }
                     )
+
+                    if (isRecordingAudio) {
+                        androidx.compose.material3.AlertDialog(
+                            onDismissRequest = {},
+                            title = {
+                                androidx.compose.material3.Text("🎤 Recording Audio...", fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+                            },
+                            text = {
+                                androidx.compose.material3.Text("Speak or sing clearly into your microphone. Tap stop when finished to transcribe with Gemini AI.")
+                            },
+                            confirmButton = {
+                                androidx.compose.material3.Button(
+                                    onClick = {
+                                        val recordedFile = audioRecorder?.stopRecording()
+                                        isRecordingAudio = false
+                                        if (recordedFile != null && recordedFile.exists()) {
+                                            Toast.makeText(context, "Transcribing audio with Gemini AI...", Toast.LENGTH_LONG).show()
+                                            viewModel.transcribeAudioRecord(recordedFile)
+                                            currentScreen = StudioScreen.EDITOR
+                                        }
+                                    },
+                                    colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = com.example.ui.theme.AppleMusicRed)
+                                ) {
+                                    androidx.compose.material3.Text("Stop & Transcribe with Gemini")
+                                }
+                            },
+                            dismissButton = {
+                                androidx.compose.material3.TextButton(
+                                    onClick = {
+                                        audioRecorder?.stopRecording()
+                                        isRecordingAudio = false
+                                    }
+                                ) {
+                                    androidx.compose.material3.Text("Cancel")
+                                }
+                            }
+                        )
+                    }
                 }
 
                 StudioScreen.CONFIRM_LYRICS -> {

@@ -11,7 +11,8 @@ data class LyricLine(
     val tokens: List<LyricToken> = emptyList(),
     val key: String = "",
     val translation: String? = null,
-    val romanization: String? = null
+    val romanization: String? = null,
+    val isBackgroundVocal: Boolean = false
 ) {
     val durationMs: Long get() = (endMs - beginMs).coerceAtLeast(0L)
 
