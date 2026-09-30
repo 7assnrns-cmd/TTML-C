@@ -1,0 +1,9 @@
+[submodule "core"]
+	path = core
+	url = https://github.com/rukamori/core.git
+[submodule "moriextractor"]
+	path = moriextractor
+	url = https://github.com/rukamori/moriextractor.git
+[submodule "morideobfuscator"]
+	path = morideobfuscator
+	url = https://github.com/rukamori/morideobfuscator.git
