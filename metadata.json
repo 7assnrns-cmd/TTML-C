@@ -1,0 +1,6 @@
+{
+  "name": "TTML Studio",
+  "description": "Apple Music-compatible word-by-word TTML karaoke lyrics editor and player with multi-agent support and LRCLIB integration.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
