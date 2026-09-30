@@ -25,3 +25,7 @@ dependencyResolutionManagement {
 rootProject.name = "TTML Studio"
 
 include(":app")
+// ⭐ مستودعات ArchiveTune الفرعية
+includeBuild("core")
+includeBuild("moriextractor")
+includeBuild("morideobfuscator")
